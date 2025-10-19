@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 248 50% 98%;
+    --foreground: 220 20% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 20%;
+
+    --primary: 220 90% 56%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 160 84% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 220 20% 96%;
+    --muted-foreground: 220 10% 50%;
+
+    --accent: 220 90% 56%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 20% 90%;
+    --input: 220 20% 90%;
+    --ring: 220 90% 56%;
+
+    --radius: 0.75rem;
+
+    /* 캐릭터 색상 */
+    --character-cody: 207 71% 59%;
+    --character-owl: 25 40% 40%;
+    --character-debuggy: 0 79% 70%;
+    --character-speedy: 28 100% 50%;
+    --character-coco: 350 100% 88%;
+    --character-cube: 283 39% 53%;
+
+    /* 코디봇 - 터미널 테마 */
+    --cody-bg: 140 10% 10%;        /* 어두운 초록 배경 */
+    --cody-text: 120 100% 60%;     /* 밝은 초록 텍스트 */
+    --cody-border: 120 100% 40%;   /* 초록 테두리 */
+
+    /* 알고 선생님 - 정글 테마 */
+    --owl-bg: 120 40% 15%;         /* 깊은 숲 배경 */
+    --owl-text: 80 60% 80%;        /* 연한 자연색 텍스트 */
+    --owl-border: 100 50% 40%;     /* 숲 테두리 */
+
+    /* 디버기 - 꽃밭 테마 */
+    --debuggy-bg: 350 100% 97%;    /* 핑크빛 밝은 배경 */
+    --debuggy-text: 340 80% 30%;   /* 진한 핑크 텍스트 */
+    --debuggy-border: 0 79% 70%;   /* 붉은 테두리 */
+
+    /* 스피디 - 우주 테마 */
+    --speedy-bg: 230 50% 10%;      /* 어두운 우주 배경 */
+    --speedy-text: 30 100% 70%;    /* 주황빛 텍스트 */
+    --speedy-border: 28 100% 50%;  /* 주황 테두리 */
+
+    /* 코코 - 캔디 테마 */
+    --coco-bg: 340 100% 98%;       /* 밝은 핑크 배경 */
+    --coco-text: 340 70% 50%;      /* 핑크 텍스트 */
+    --coco-border: 350 100% 80%;   /* 연한 핑크 테두리 */
+
+    /* 프로페서 큐브 - 칠판 테마 */
+    --cube-bg: 160 40% 20%;        /* 칠판 초록 배경 */
+    --cube-text: 60 100% 90%;      /* 분필색 텍스트 */
+    --cube-border: 283 39% 53%;    /* 보라 테두리 */
+
+    /* 그림자 */
+    --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --shadow-heavy: 0 8px 24px rgba(0, 0, 0, 0.15);
+
+    /* 간격 */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+  }
+
+  .dark {
+    --background: 220 30% 8%;
+    --foreground: 220 10% 95%;
+
+    --card: 220 25% 12%;
+    --card-foreground: 220 10% 95%;
+
+    --popover: 220 25% 12%;
+    --popover-foreground: 220 10% 95%;
+
+    --primary: 220 90% 56%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 160 84% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 220 20% 20%;
+    --muted-foreground: 220 10% 60%;
+
+    --accent: 220 90% 56%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 20% 20%;
+    --input: 220 20% 20%;
+    --ring: 220 90% 56%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard Variable", Pretendard, "Segoe UI", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  }
+}
+
+@layer utilities {
+  .shadow-light {
+    box-shadow: var(--shadow-light);
+  }
+  .shadow-medium {
+    box-shadow: var(--shadow-medium);
+  }
+  .shadow-heavy {
+    box-shadow: var(--shadow-heavy);
+  }
+}

@@ -1,0 +1,23 @@
+# Environment variables
+.env
+
+# Docker volumes
+postgres_data/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Maven
+backend/target/
+backend/.mvn/
+
+# Node
+frontend/prompt-to-ui-korean-main/prompt-to-ui-korean-main/node_modules/
+frontend/prompt-to-ui-korean-main/prompt-to-ui-korean-main/dist/
+

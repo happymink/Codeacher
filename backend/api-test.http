@@ -1,0 +1,226 @@
+### Codeacher API 테스트
+### Base URL
+@baseUrl = http://localhost:8080
+@accessToken = your-jwt-token-here
+
+###############################################################################
+### 0. 테스트용 JWT 토큰 발급 (개발 환경 전용)
+###############################################################################
+
+### 0.1 간단한 테스트 토큰 발급 - GET 요청
+GET {{baseUrl}}/api/test/auth/token
+Accept: application/json
+
+### 0.2 다른 이메일로 테스트 토큰 발급
+GET {{baseUrl}}/api/test/auth/token?email=user123@example.com
+Accept: application/json
+
+### 0.3 POST로 테스트 로그인 (이름 지정 가능)
+POST {{baseUrl}}/api/test/auth/login
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "name": "홍길동"
+}
+
+### 📌 위 요청에서 받은 accessToken을 복사해서 상단의 @accessToken 변수에 붙여넣으세요!
+### 예: @accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+###############################################################################
+### 1. 인증 (Authentication) - 인증 불필요
+###############################################################################
+
+### 1.1 로그아웃 (토큰 없이도 가능)
+POST {{baseUrl}}/api/auth/logout
+Content-Type: application/json
+
+###############################################################################
+### 2. 캐릭터 (Characters) - 인증 불필요
+###############################################################################
+
+### 2.1 모든 캐릭터 조회
+GET {{baseUrl}}/api/characters
+Accept: application/json
+
+### 2.2 특정 캐릭터 조회
+GET {{baseUrl}}/api/characters/cody
+Accept: application/json
+
+### 2.3 다른 캐릭터들 조회
+GET {{baseUrl}}/api/characters/prof_owl
+Accept: application/json
+
+GET {{baseUrl}}/api/characters/debuggy
+Accept: application/json
+
+GET {{baseUrl}}/api/characters/speedy
+Accept: application/json
+
+GET {{baseUrl}}/api/characters/coco
+Accept: application/json
+
+GET {{baseUrl}}/api/characters/prof_cube
+Accept: application/json
+
+###############################################################################
+### 3. 인증 필요 API (JWT 토큰 필요)
+### 주의: Google OAuth를 통해 실제 토큰을 받아야 합니다
+###############################################################################
+
+### 3.1 현재 사용자 정보 조회
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### 3.2 현재 선택된 캐릭터 조회
+GET {{baseUrl}}/api/characters/current
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### 3.3 캐릭터 변경
+PUT {{baseUrl}}/api/characters/select/prof_owl
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+###############################################################################
+### 4. 코드 제출 (Submissions)
+###############################################################################
+
+### 4.1 코드 제출
+POST {{baseUrl}}/api/submissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "problemSite": "BAEKJOON",
+  "problemNumber": "1000",
+  "problemTitle": "A+B",
+  "language": "JAVA",
+  "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        System.out.println(a + b);\n        sc.close();\n    }\n}",
+  "testCases": [
+    {
+      "input": "1 2",
+      "expectedOutput": "3"
+    }
+  ],
+  "executionTime": 120,
+  "memoryUsage": 11420
+}
+
+### 4.2 제출 내역 조회 (페이지네이션)
+GET {{baseUrl}}/api/submissions?page=0&size=10&sort=submittedAt,desc
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### 4.3 특정 제출 조회
+GET {{baseUrl}}/api/submissions/1
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### 4.4 제출 상태 조회
+GET {{baseUrl}}/api/submissions/1/status
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+###############################################################################
+### 5. 통계 (Statistics)
+###############################################################################
+
+### 5.1 사용자 통계 조회
+GET {{baseUrl}}/api/statistics/summary
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+###############################################################################
+### 6. 다양한 코드 제출 예시
+###############################################################################
+
+### 6.2 백준 2557번 - Hello World (Python)
+POST {{baseUrl}}/api/submissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "problemSite": "BAEKJOON",
+  "problemNumber": "2557",
+  "problemTitle": "Hello World",
+  "language": "PYTHON",
+  "code": "print('Hello World')",
+  "testCases": [
+    {
+      "input": "",
+      "expectedOutput": "Hello World"
+    }
+  ],
+  "executionTime": 68,
+  "memoryUsage": 29200
+}
+
+### 6.3 백준 10950번 - A+B (C++)
+POST {{baseUrl}}/api/submissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "problemSite": "BAEKJOON",
+  "problemNumber": "10950",
+  "problemTitle": "A+B - 3",
+  "language": "CPP",
+  "code": "#include <iostream>\nusing namespace std;\n\nint main() {\n    int T, a, b;\n    cin >> T;\n    while(T--) {\n        cin >> a >> b;\n        cout << a + b << endl;\n    }\n    return 0;\n}",
+  "testCases": [
+    {
+      "input": "5\n1 1\n2 3\n3 4\n9 8\n5 2",
+      "expectedOutput": "2\n5\n7\n17\n7"
+    }
+  ],
+  "executionTime": 0,
+  "memoryUsage": 2024
+}
+
+### 6.4 프로그래머스 문제
+POST {{baseUrl}}/api/submissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "problemSite": "PROGRAMMERS",
+  "problemNumber": "12345",
+  "problemTitle": "두 정수 사이의 합",
+  "language": "JAVASCRIPT",
+  "code": "function solution(a, b) {\n    let answer = 0;\n    const min = Math.min(a, b);\n    const max = Math.max(a, b);\n    for(let i = min; i <= max; i++) {\n        answer += i;\n    }\n    return answer;\n}",
+  "testCases": [
+    {
+      "input": "3, 5",
+      "expectedOutput": "12"
+    },
+    {
+      "input": "3, 3",
+      "expectedOutput": "3"
+    }
+  ],
+  "executionTime": 0.5,
+  "memoryUsage": 33.5
+}
+
+### 6.5 LeetCode 문제
+POST {{baseUrl}}/api/submissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "problemSite": "LEETCODE",
+  "problemNumber": "1",
+  "problemTitle": "Two Sum",
+  "language": "PYTHON",
+  "code": "class Solution:\n    def twoSum(self, nums: List[int], target: int) -> List[int]:\n        hashmap = {}\n        for i, num in enumerate(nums):\n            complement = target - num\n            if complement in hashmap:\n                return [hashmap[complement], i]\n            hashmap[num] = i\n        return []",
+  "testCases": [
+    {
+      "input": "[2,7,11,15], 9",
+      "expectedOutput": "[0,1]"
+    }
+  ],
+  "executionTime": 48,
+  "memoryUsage": 15200
+}
+
