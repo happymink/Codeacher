@@ -5,11 +5,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Code2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
-  const { login, isAuthenticated, logout } = useAuth();
+  const { login, loginWithToken, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -24,6 +25,39 @@ export default function Login() {
     }
   }, [isAuthenticated, navigate]);
 
+  const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
+    if (!credentialResponse.credential) {
+      toast({
+        title: '로그인 실패',
+        description: 'Google 인증 정보를 받아올 수 없습니다.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      console.log('🔐 구글 로그인 시작:', credentialResponse.credential.substring(0, 20) + '...');
+      await login(credentialResponse.credential);
+      
+      console.log('✅ 구글 로그인 성공, 캐릭터 선택 페이지로 이동');
+      toast({
+        title: '로그인 성공! 🎉',
+        description: '캐릭터 선택 페이지로 이동합니다.',
+      });
+      navigate('/character-selection');
+    } catch (error) {
+      console.error('❌ Google 로그인 에러:', error);
+      toast({
+        title: '로그인 실패',
+        description: `Google 로그인 중 오류가 발생했습니다: ${error instanceof Error ? error.message : '알 수 없는 오류'}`,
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleTestLogin = async () => {
     setLoading(true);
     try {
@@ -35,8 +69,8 @@ export default function Login() {
         // 토큰 저장
         localStorage.setItem('accessToken', data.data.accessToken);
         
-        // Context의 login 함수 호출 (토큰으로 사용자 정보 가져오기)
-        await login(data.data.accessToken);
+        // Context의 loginWithToken 함수 호출 (토큰으로 사용자 정보 가져오기)
+        await loginWithToken(data.data.accessToken);
         
         toast({
           title: '로그인 성공! 🎉',
@@ -143,11 +177,44 @@ export default function Login() {
           transition={{ delay: 0.6 }}
           className="mt-8 space-y-4"
         >
+          {/* Google 로그인 버튼 */}
+          <div className="w-full">
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={() => {
+                toast({
+                  title: 'Google 로그인 실패',
+                  description: 'Google 로그인 중 오류가 발생했습니다.',
+                  variant: 'destructive',
+                });
+              }}
+              useOneTap={false}
+              theme="outline"
+              size="large"
+              width="100%"
+              text="signin_with"
+              shape="rectangular"
+            />
+          </div>
+
+          {/* 구분선 */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                또는
+              </span>
+            </div>
+          </div>
+
           {/* 테스트 로그인 버튼 */}
           <Button
             onClick={handleTestLogin}
             disabled={loading}
-            className="w-full h-12 text-base gap-3 shadow-medium hover:shadow-heavy transition-all"
+            variant="outline"
+            className="w-full h-12 text-base gap-3"
             size="lg"
           >
             <Code2 className="h-5 w-5" />
@@ -155,7 +222,7 @@ export default function Login() {
           </Button>
           
           <p className="text-xs text-center text-muted-foreground">
-            백엔드 서버 연결 확인용 테스트 로그인
+            개발 및 테스트용 로그인
           </p>
         </motion.div>
 

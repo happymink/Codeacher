@@ -182,8 +182,16 @@ const realApi = axios.create({
 realApi.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
+    console.log('🔐 API 요청 토큰 확인:', { 
+      url: config.url, 
+      hasToken: !!token, 
+      token: token ? token.substring(0, 20) + '...' : 'none' 
+    });
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('✅ Authorization 헤더 추가됨');
+    } else {
+      console.log('❌ 토큰이 없어서 Authorization 헤더 추가 안됨');
     }
     return config;
   },
@@ -200,10 +208,23 @@ realApi.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.error('❌ API Error:', error.response?.status, error.response?.data);
+    console.error('❌ API Error:', {
+      url: error.config?.url,
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
+    
     if (error.response?.status === 401) {
+      console.log('🔐 401 에러 - 토큰 제거 및 로그인 페이지로 리다이렉트');
+      console.log('🔍 현재 토큰:', localStorage.getItem('accessToken')?.substring(0, 20) + '...');
       localStorage.removeItem('accessToken');
-      window.location.href = '/login';
+      
+      // 현재 경로가 로그인 페이지가 아닐 때만 리다이렉트
+      if (window.location.pathname !== '/login') {
+        console.log('🔄 로그인 페이지로 리다이렉트');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

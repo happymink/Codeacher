@@ -2,6 +2,7 @@ package com.codeacher.exception;
 
 import com.codeacher.dto.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.connector.ClientAbortException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -46,6 +47,13 @@ public class GlobalExceptionHandler {
                 .message("입력값 검증 실패")
                 .data(errors)
                 .build());
+    }
+
+    @ExceptionHandler(ClientAbortException.class)
+    public ResponseEntity<ApiResponse<Void>> handleClientAbortException(ClientAbortException ex) {
+        // 클라이언트가 연결을 중단한 경우 - 로그만 기록하고 응답하지 않음
+        log.debug("Client aborted connection: {}", ex.getMessage());
+        return null; // 응답하지 않음
     }
 
     @ExceptionHandler(Exception.class)

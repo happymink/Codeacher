@@ -109,54 +109,25 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [currentCharacter, setCurrentCharacter] = useState<CharacterProfile | null>(defaultCharacters[0]); // 기본 캐릭터 설정
   const [allCharacters, setAllCharacters] = useState<CharacterProfile[]>(defaultCharacters);
 
-  // 캐릭터 목록 불러오기
+  // 캐릭터 목록 불러오기 - API 호출 비활성화 (무한 새로고침 방지)
   useEffect(() => {
-    api.get('/api/characters')
-      .then((response) => {
-        // 백엔드 응답 구조: { success: true, data: [...] }
-        const charactersData = response.data.data || response.data;
-        
-        // response.data가 배열인지 확인
-        if (Array.isArray(charactersData) && charactersData.length > 0) {
-          // 백엔드에서 받은 캐릭터에 프론트엔드 이미지 매핑
-          const charactersWithImages = charactersData.map(char => ({
-            ...char,
-            image: getCharacterImage(char.id),
-          }));
-          setAllCharacters(charactersWithImages);
-        } else {
-          setAllCharacters(defaultCharacters);
-        }
-      })
-      .catch((error) => {
-        console.log('API 호출 실패, 기본 캐릭터 사용:', error.message);
-        setAllCharacters(defaultCharacters);
-      });
+    console.log('🔧 CharacterContext - API 호출 비활성화, 기본 캐릭터 사용');
+    setAllCharacters(defaultCharacters);
   }, []);
 
-  // 사용자가 선택한 캐릭터 불러오기
+  // 사용자가 선택한 캐릭터 불러오기 - API 호출 비활성화 (무한 새로고침 방지)
   useEffect(() => {
-    api.get('/api/auth/me')
-      .then((response) => {
-        const selectedCharacterId = response.data?.selectedCharacter;
-        if (selectedCharacterId) {
-          const selected = allCharacters.find((c) => c.id === selectedCharacterId);
-          if (selected) {
-            setCurrentCharacter(selected);
-            console.log('✅ 선택된 캐릭터 로드:', selected.name);
-          }
-        }
-      })
-      .catch((error) => {
-        console.log('선택된 캐릭터 로드 실패, 기본 캐릭터 사용:', error.message);
-      });
+    console.log('🔧 CharacterContext - 사용자 캐릭터 API 호출 비활성화, 기본 캐릭터 사용');
+    // API 호출 없이 기본 캐릭터 사용
   }, [allCharacters]);
 
   const selectCharacter = async (characterId: string) => {
-    await api.put(`/api/characters/select/${characterId}`);
+    // API 호출 비활성화 (무한 새로고침 방지)
+    console.log('🔧 CharacterContext - 캐릭터 선택 API 호출 비활성화');
     const selected = allCharacters.find((c) => c.id === characterId);
     if (selected) {
       setCurrentCharacter(selected);
+      console.log('✅ 캐릭터 선택됨 (로컬):', selected.name);
     }
   };
 
