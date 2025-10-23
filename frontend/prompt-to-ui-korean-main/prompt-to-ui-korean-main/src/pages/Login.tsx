@@ -10,7 +10,7 @@ import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
-  const { login, isAuthenticated, logout } = useAuth();
+  const { login, loginWithToken, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -37,18 +37,20 @@ export default function Login() {
 
     setLoading(true);
     try {
+      console.log('🔐 구글 로그인 시작:', credentialResponse.credential.substring(0, 20) + '...');
       await login(credentialResponse.credential);
       
+      console.log('✅ 구글 로그인 성공, 캐릭터 선택 페이지로 이동');
       toast({
         title: '로그인 성공! 🎉',
         description: '캐릭터 선택 페이지로 이동합니다.',
       });
       navigate('/character-selection');
     } catch (error) {
-      console.error('Google 로그인 에러:', error);
+      console.error('❌ Google 로그인 에러:', error);
       toast({
         title: '로그인 실패',
-        description: 'Google 로그인 중 오류가 발생했습니다.',
+        description: `Google 로그인 중 오류가 발생했습니다: ${error instanceof Error ? error.message : '알 수 없는 오류'}`,
         variant: 'destructive',
       });
     } finally {
@@ -67,8 +69,8 @@ export default function Login() {
         // 토큰 저장
         localStorage.setItem('accessToken', data.data.accessToken);
         
-        // Context의 login 함수 호출 (토큰으로 사용자 정보 가져오기)
-        await login(data.data.accessToken);
+        // Context의 loginWithToken 함수 호출 (토큰으로 사용자 정보 가져오기)
+        await loginWithToken(data.data.accessToken);
         
         toast({
           title: '로그인 성공! 🎉',

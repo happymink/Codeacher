@@ -91,11 +91,12 @@ export default function Feedback() {
     );
   }
 
-  const bgColor = submission.character.emoji === '🤖' ? 'hsl(207, 71%, 59%, 0.05)' :
-                   submission.character.emoji === '🦉' ? 'hsl(25, 40%, 40%, 0.05)' :
-                   submission.character.emoji === '🐛' ? 'hsl(0, 79%, 70%, 0.05)' :
-                   submission.character.emoji === '🚀' ? 'hsl(28, 100%, 50%, 0.05)' :
-                   submission.character.emoji === '🐱' ? 'hsl(350, 100%, 88%, 0.05)' :
+  const characterEmoji = submission.character?.emoji || '🤖';
+  const bgColor = characterEmoji === '🤖' ? 'hsl(207, 71%, 59%, 0.05)' :
+                   characterEmoji === '🦉' ? 'hsl(25, 40%, 40%, 0.05)' :
+                   characterEmoji === '🐛' ? 'hsl(0, 79%, 70%, 0.05)' :
+                   characterEmoji === '🚀' ? 'hsl(28, 100%, 50%, 0.05)' :
+                   characterEmoji === '🐱' ? 'hsl(350, 100%, 88%, 0.05)' :
                    'hsl(283, 39%, 53%, 0.05)';
 
   return (
@@ -123,13 +124,13 @@ export default function Feedback() {
                     {getCharacterImage(submission.characterId) ? (
                       <img 
                         src={getCharacterImage(submission.characterId)} 
-                        alt={submission.character.name}
+                        alt={submission.character?.name || '캐릭터'}
                         className="w-6 h-6 object-contain rounded-full inline-block"
                       />
                     ) : (
-                      <span className="text-xl">{submission.character.emoji}</span>
+                      <span className="text-xl">{submission.character?.emoji || '🤖'}</span>
                     )}
-                    {submission.character.name}
+                    {submission.character?.name || '코디'}
                   </span>
                 </div>
               </div>
@@ -178,13 +179,13 @@ export default function Feedback() {
                 {getCharacterImage(submission.characterId) ? (
                   <img 
                     src={getCharacterImage(submission.characterId)} 
-                    alt={submission.character.name}
+                    alt={submission.character?.name || '캐릭터'}
                     className="w-16 h-16 object-contain rounded-full"
                   />
                 ) : (
-                  <span className="text-4xl">{submission.character.emoji}</span>
+                  <span className="text-4xl">{submission.character?.emoji || '🤖'}</span>
                 )}
-                <h2 className="text-2xl font-bold">{submission.character.name}의 피드백</h2>
+                <h2 className="text-2xl font-bold">{submission.character?.name || '코디'}의 피드백</h2>
               </div>
 
               <div className="space-y-6">
