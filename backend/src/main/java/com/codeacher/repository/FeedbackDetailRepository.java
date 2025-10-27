@@ -16,3 +16,4 @@ public interface FeedbackDetailRepository extends JpaRepository<FeedbackDetail, 
 }
 
 
+
